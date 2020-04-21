@@ -16,7 +16,7 @@ https://creditapi.ru
     CreditApi.init({CREDIT_API_HOST},{CREDIT_API_ORG});
 
 
-###Доступные методы
+### Доступные методы
 
 
     CreditApi.login(username,password) //авторизация. В качестве username может использоваться телефон или email
@@ -63,7 +63,7 @@ https://creditapi.ru
     
     signDocument(name) //подписать документ
     
-###Доступные объекты
+### Доступные объекты
 
     CreditApi.User //текущий авторизованный пользователь
     
