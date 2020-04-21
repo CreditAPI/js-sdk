@@ -1,0 +1,23 @@
+{
+  "name": "credit-api",
+  "version": "1.0.0",
+  "description": "CreditAPI SDK for JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CreditAPI/js-sdk.git"
+  },
+  "keywords": [
+    "Credit",
+    "API"
+  ],
+  "author": "CreditAPI <support@creditapi.ru> (https://creditapi.ru)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CreditAPI/js-sdk/issues"
+  },
+  "homepage": "https://github.com/CreditAPI/js-sdk#readme"
+}
