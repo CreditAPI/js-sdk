@@ -3,16 +3,19 @@ https://creditapi.ru
 # Credit API JS SDK
 ## JavaScript библиотека для работы с CreditAPI 
 
-###Установка модуля
+### Установка модуля
     node install credit-api
     
 Возможно использование библиотеки в typescript приложениях
+
     import CreditApi from 'credit-api';
     
 Или в качестве обычного JS класса
+
     const CreditApi = require('credit-api');
 
 Перед началом использования библиотеки - ее необходимо инцициализировать
+
     CreditApi.init({CREDIT_API_HOST},{CREDIT_API_ORG});
 
 
@@ -59,18 +62,18 @@ https://creditapi.ru
     
     CreditApi.getRequiredDocuments() //получить список документов, обязательный для размещения на сайте
     
-    getDocument(name) //получить документ по наименованию
+    CreditApi.getDocument(name) //получить документ по наименованию
     
-    signDocument(name) //подписать документ
+    CreditApi.signDocument(name) //подписать документ
     
 ### Доступные объекты
 
     CreditApi.User //текущий авторизованный пользователь
     
     
-Порядок выдачи кредита описан в документе "Общий порядок выдачи кредита", доступный в личном кабинете в разделе Интеграция/Инструкции
+Порядок выдачи кредита описан в документе ["Общий порядок выдачи кредита"](https://creditapi.ru/assets/docs/CreditAPI%20Manual%20RU.pdf)
 
-Подробное описание методов и объектов - в разделе Интеграция/Swagger
+Подробное описание методов и объектов - в [личном кабинете](https://creditapi.ru/sandbox/) в разделе [Интеграция/Swagger](https://creditapi.ru/sandbox/#/integration/swagger)
 
 Пример использования данной библиотеки и шаблон готового сайта здесь: https://github.com/CreditAPI/CreditApiTemplateApp
 
