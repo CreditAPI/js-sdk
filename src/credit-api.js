@@ -58,6 +58,7 @@ const CreditApi ={
     })
   },
   logout(){
+     this.User=null;
      this.token=null;
      localStorage.removeItem('token');
   },
@@ -216,7 +217,10 @@ const CreditApi ={
   getWebsiteStyle(id){
     return this.makeRequest("GET","/classes/website/"+id);
   },
-  makeRequest(method,query,params=null) {
+  uploadFile(name,content_type,binary_data) {
+    return this.makeRequest("POST","/files/"+name,binary_data,{'Content-Type':content_type});
+  },
+  makeRequest(method,query,params=null,headers=null) {
     var that=this;
     return new Promise(function (resolve, reject) {
       var xhr = new XMLHttpRequest();
@@ -251,9 +255,13 @@ const CreditApi ={
           message: xhr.statusText
         });
       };
-      //xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-      if (params)
+      if ((params)&& (typeof params == 'object')) {
         xhr.setRequestHeader('Content-Type','application/json');
+      }
+      if ((headers)&&(typeof headers == 'object'))
+        for (var k in headers){
+          xhr.setRequestHeader(k,headers[k]);
+        }
       if (that.token)
         xhr.setRequestHeader('X-Parse-Session-Token', that.token);
       else if (that.orgId)
@@ -261,30 +269,14 @@ const CreditApi ={
       else
         reject ('CreditApi is not initialized');
       if (params) 
-        xhr.send(JSON.stringify(params));
+        if (typeof params == 'object')
+          xhr.send(JSON.stringify(params));
+        else
+          xhr.send(params);
       else
         xhr.send();
     });
-  },
-
-  makeRequest2(method,query,params=null){ //won't work with IE
-    return new Promise((resolve,reject)=>{
-      let myHeaders = new Headers();
-      if (this.token)
-        myHeaders.append('X-Parse-Session-Token',this.token);  
-      else if (this.orgId)
-        myHeaders.append('X-Org-Id',this.orgId);      
-      else
-        reject ('CreditApi is not initialized');
-      var opts={method:method,headers:myHeaders};
-      fetch(this.url+query,opts).then(res=>{
-        if (res.ok)
-          resolve(res.text());
-        else
-          reject(res.status,res.statusText);
-      }).catch(err=>{reject()});
-    });
-  },
+  }
 }
 CreditApi.CreditApi = CreditApi;
 export default CreditApi;

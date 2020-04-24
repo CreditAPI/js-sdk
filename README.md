@@ -65,6 +65,8 @@ https://creditapi.ru
     CreditApi.getDocument(name) //получить документ по наименованию
     
     CreditApi.signDocument(name) //подписать документ
+
+    CreditApi.uploadFile(name,content_type,binary_data) //закачать файл
     
 ### Доступные объекты
 
