@@ -66,7 +66,7 @@ https://creditapi.ru
     
     CreditApi.signDocument(name) //подписать документ
 
-    CreditApi.uploadFile(name,content_type,binary_data) //закачать файл
+    CreditApi.uploadFile(name,content_type,image_data) //закачать файл
     
 ### Доступные объекты
 

@@ -217,8 +217,8 @@ const CreditApi ={
   getWebsiteStyle(id){
     return this.makeRequest("GET","/classes/website/"+id);
   },
-  uploadFile(name,content_type,binary_data) {
-    return this.makeRequest("POST","/files/"+name,binary_data,{'Content-Type':content_type});
+  uploadFile(name,content_type,image_data) {
+    return this.makeRequest("POST","/files/"+name,image_data,{'Content-Type':content_type});
   },
   makeRequest(method,query,params=null,headers=null) {
     var that=this;
@@ -255,13 +255,13 @@ const CreditApi ={
           message: xhr.statusText
         });
       };
-      if ((params)&& (typeof params == 'object')) {
-        xhr.setRequestHeader('Content-Type','application/json');
-      }
       if ((headers)&&(typeof headers == 'object'))
         for (var k in headers){
           xhr.setRequestHeader(k,headers[k]);
-        }
+      } 
+      if ((params)&& (typeof params == 'object') && ((!headers)||(!headers['Content-Type']))) {
+        xhr.setRequestHeader('Content-Type','application/json');
+      }
       if (that.token)
         xhr.setRequestHeader('X-Parse-Session-Token', that.token);
       else if (that.orgId)
@@ -269,10 +269,11 @@ const CreditApi ={
       else
         reject ('CreditApi is not initialized');
       if (params) 
-        if (typeof params == 'object')
+        if ((typeof params == 'object')&&(!(params instanceof Blob))) {
           xhr.send(JSON.stringify(params));
-        else
+        } else {
           xhr.send(params);
+        }
       else
         xhr.send();
     });
