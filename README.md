@@ -67,6 +67,10 @@ https://creditapi.ru
     CreditApi.signDocument(name) //подписать документ
 
     CreditApi.uploadFile(name,content_type,image_data) //закачать файл
+
+    CreditApi.getMessages() //Получить список сообщений
+
+    CreditApi.sendMessage(message) //Отправить сообщение оператору (message - объект вида {content:'CONTENT',attachments:[]})
     
 ### Доступные объекты
 

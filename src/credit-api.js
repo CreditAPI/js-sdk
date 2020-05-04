@@ -5,6 +5,8 @@ const CreditApi ={
   User:null,
   credit_products:null,
   cards:null,
+  last_message:null,
+  last_message_unreaded:false,
   init(url,orgId) {
     this.url=url;
     this.orgId=orgId;
@@ -216,6 +218,49 @@ const CreditApi ={
   },
   getWebsiteStyle(id){
     return this.makeRequest("GET","/classes/website/"+id);
+  },
+  getMessages(limit=0,offset=0,nomark=false){
+    return new Promise((resolve,reject)=>{
+      let url="/classes/message?order=-createdAt";
+      if (limit)
+        url+="&limit="+limit;
+      if (offset)
+        url+="&offset="+offset;
+      let headers=null;
+      if (nomark){
+        headers={'x-dont-mark-as-readed':true};
+      }
+      this.makeRequest("GET",url,null,headers).then(result=>{
+        resolve(result.results);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  sendMessage(message) {
+    return this.makeRequest("POST","/classes/message",message);
+  },
+  updateLastMessage(){
+    return new Promise((resolve,reject)=>{
+      this.getMessages(1,0,true).then((result)=>{
+        this.last_message=result[0];
+        if ((this.last_message['sender_email']!=this.User.email)&&((!this.last_message['readedAt'])||(this.last_message['need_answer']))) {
+          this.last_message_unreaded=true;
+        } else {
+          this.last_message_unreaded=false;
+        }
+        resolve(this.last_message);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  enableLastMessageAutoupdate(interval=5){
+    this.updateLastMessage().then(()=>{
+      setTimeout(()=>{
+        this.enableLastMessageAutoupdate(interval);
+      },interval*1000);
+    });
   },
   uploadFile(name,content_type,image_data) {
     return this.makeRequest("POST","/files/"+name,image_data,{'Content-Type':content_type});
