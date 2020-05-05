@@ -1,6 +1,6 @@
 {
   "name": "credit-api",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "CreditAPI SDK for JavaScript",
   "main": "index.js",
   "scripts": {

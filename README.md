@@ -64,7 +64,9 @@ https://creditapi.ru
     
     CreditApi.getDocument(name) //получить документ по наименованию
     
-    CreditApi.signDocument(name) //подписать документ
+    CreditApi.signDocument(name,?code) //подписать документ 
+    
+    CreditApi.sendSMSforSigning(name) //Отправить СМС-код для электронного подписания документа (Для документов которые требуется подписать с помощью СМС)
 
     CreditApi.uploadFile(name,content_type,image_data) //закачать файл
 

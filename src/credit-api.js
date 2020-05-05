@@ -213,8 +213,13 @@ const CreditApi ={
       });;
     });
   },
-  signDocument(name){
-    return this.makeRequest("PUT","/document/"+name);
+  signDocument(name,code=null){
+    let data=null;
+    if (code) data={'sms_code':code};
+    return this.makeRequest("PUT","/document/"+name,data);
+  },
+  sendSMSforSigning(name){
+    return this.makeRequest("PUT","/document/"+name,{'send_new_sms_code':true});
   },
   getWebsiteStyle(id){
     return this.makeRequest("GET","/classes/website/"+id);
@@ -284,7 +289,7 @@ const CreditApi ={
               reject({
                 status: xhr.status,
                 code: jsonerr.code,
-                message: jsonerr.error
+                message: jsonerr.error||jsonerr.message
               });
           } catch(err) {
             reject({
