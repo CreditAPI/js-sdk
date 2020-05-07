@@ -249,7 +249,7 @@ const CreditApi ={
     return new Promise((resolve,reject)=>{
       this.getMessages(1,0,true).then((result)=>{
         this.last_message=result[0];
-        if ((this.last_message['sender_email']!=this.User.email)&&((!this.last_message['readedAt'])||(this.last_message['need_answer']))) {
+        if ((this.last_message)&&(this.last_message['sender_email']!=this.User.email)&&((!this.last_message['readedAt'])||(this.last_message['need_answer']))) {
           this.last_message_unreaded=true;
         } else {
           this.last_message_unreaded=false;
