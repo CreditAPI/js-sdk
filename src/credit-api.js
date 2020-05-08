@@ -85,6 +85,15 @@ const CreditApi ={
   saveUserdata(data){
     return this.makeRequest("PUT","/users/"+this.User.objectId,data);
   },
+  requestPasswordReset(email) {
+    return this.makeRequest("POST","/requestPasswordReset",{email:email});
+  },
+  resendVerificationLink(email) {
+    return this.makeRequest("POST","/verificationEmailRequest",{email:email});
+  },
+  changePassword(old_password,new_password){
+    return this.makeRequest("POST","/functions/changepwd",{old_password:old_password,new_password:new_password});
+  },
   getCreditProducts(refresh=false){
     return new Promise((resolve,reject)=>{
       if ((this.credit_products)&&(!refresh))
