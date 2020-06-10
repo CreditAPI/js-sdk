@@ -40,15 +40,35 @@ https://creditapi.ru
     
     CreditApi.getOpenedLoans() //получение списка открытых кредитов текущего пользователя
     
-    CreditApi.getLoan(id) // получение информации о пользователе по ID
+    CreditApi.getLoan(loan_id) // получение информации о заявке/кредите по ID
     
-    CreditApi.getMoney(id) //запрос на перечисление денег по одобренной заявке
+    CreditApi.getPaymentSchedule(loan_id) //получить график платежей (включая уже проведенные платежи и их статус)
     
-    CreditApi.getCards(refresh) // получение списка карт пользователя (refresh=true, чтобы принудительно обновить список карт)
+    CreditApi.getMoney(loan_id) //запрос на перечисление денег по одобренной заявке
     
-    CreditApi.linkCard(return_url) //получить ссылку для привязки новой карты
+    CreditApi.getTransactions(loan_id) //получить список успешных транзакций по займу
     
-    CreditApi.unlinkCard(id) //отвязать карту
+    CreditApi.calculatePayment(loan_id) //рассчитать платеж на текущую дату (возвращается min, current, full)
+    
+    CreditApi.makePayment(loan_id,amount,prolong,payment_provider,payment_account,return_url,extra) //внести платеж
+    
+    CreditApi.getCards(refresh) /*deprecated, use getPaymentAccounts instead */ // получение списка карт пользователя (refresh=true, чтобы принудительно обновить список карт)
+    
+    CreditApi.linkCard(return_url) /*deprecated, use linkPaymentAccount instead */ //получить ссылку для привязки новой карты
+    
+    CreditApi.unlinkCard(id) /*deprecated, use unlinkPaymentAccount instead */ //отвязать карту
+
+    CreditApi.getPaymentProviders(refresh) //получить список доступных для пользователя платежных провайдеров
+    
+    CreditApi.getPaymentAccounts(refresh) //получить список платежных аккаунтов пользователя
+    
+    CreditApi.getPayoutProvidersOnly() //получить список платежных провайдеров, поддерживающих масс. выплаты (для перечисления займов)
+    
+    CreditApi.getPayoutAccountsOnly() //получить список платежных аккаунтов пользователя, поддерживающих масс. выплаты (для перечисления займов)
+    
+    CreditApi.linkPaymentAccount(return_url,payment_provider) //привязать новый платежный аккаунт
+    
+    CreditApi.unlinkPaymentAccount(id) //отвязать платежный аккаунт
     
     CreditApi.getApplicationFields(credit_product_id) //получить список полей для анкеты. credit_product_id можно не указывать
     

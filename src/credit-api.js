@@ -4,7 +4,9 @@ const CreditApi ={
   token:null,
   User:null,
   credit_products:null,
-  cards:null,
+  cards:null, /**deprecated */
+  payment_providers:null,
+  payment_accounts:null,
   last_message:null,
   last_message_unreaded:false,
   init(url,orgId) {
@@ -111,7 +113,7 @@ const CreditApi ={
   },
   getLoans(){
     return new Promise((resolve,reject)=>{
-      this.makeRequest("GET","/classes/loan").then(result=>{
+      this.makeRequest("GET","/classes/loan?order=-createdAt").then(result=>{
         resolve(result.results);
       }).catch(err=>{
         reject(err);
@@ -130,10 +132,46 @@ const CreditApi ={
   getLoan(id){
     return this.makeRequest("GET","/classes/loan/"+id);
   },
+  getPaymentSchedule(loan_id){
+    return this.makeRequest("GET","/loan/"+loan_id+"/schedule");
+  },
+  calculatePayment(id){
+    return this.makeRequest("POST","/functions/calculate",{loan_id:id});
+  },
   getMoney(id){
     return this.makeRequest("POST","/functions/sendmoney",{loan:id});
   },
-  getCards(refresh=false){
+  getTransactions(loan_id){
+    return new Promise((resolve,reject)=>{
+      this.makeRequest("GET",'/classes/transaction?where={"loan":{"__type":"Pointer","className":"loan","objectId":"'+loan_id+'"}}').then(result=>{
+        resolve(result.results);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  getTransactionsInProcess(loan_id){
+    return new Promise((resolve,reject)=>{
+      this.makeRequest("GET",'/classes/transaction?where={"loan":{"__type":"Pointer","className":"loan","objectId":"'+loan_id+'"},"status":"in process"}').then(result=>{
+        resolve(result.results);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  getTransaction(id){
+    return this.makeRequest("GET","/classes/transaction/"+id);
+  },
+  makePayment(loan_id,amount,prolong,payment_provider,payment_account,return_url,extra){
+    return new Promise((resolve,reject)=>{
+      this.makeRequest("POST","/functions/pay",{loan_id:loan_id,amount:amount,prolong:prolong,payment_provider:payment_provider,payment_account:payment_account,return_url:return_url,extra:extra}).then(result=>{
+        resolve(result.result);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  getCards(refresh=false){/** deprecated */
     return new Promise((resolve,reject)=>{
       if ((this.cards)&&(!refresh)) {
         resolve(this.cards);
@@ -145,7 +183,7 @@ const CreditApi ={
       });
     });
   },
-  linkCard(return_url){
+  linkCard(return_url){ /** deprecated */
     return new Promise((resolve,reject)=>{
       this.makeRequest("POST","/functions/linkcard",{return_url:return_url}).then(result=>{
         resolve(result.result.url);
@@ -154,10 +192,71 @@ const CreditApi ={
       });
     });
   },
-  unlinkCard(id){
+  unlinkCard(id){ /** deprecated */
     return new Promise((resolve,reject)=>{
       this.makeRequest("POST","/functions/unlinkcard",{id:id}).then(result=>{
         this.getCards(true);
+        resolve(result);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  getPaymentProviders(refresh=false){
+    return new Promise((resolve,reject)=>{
+      if ((this.payment_providers)&&(!refresh)) {
+        resolve(this.payment_providers);
+      } else this.makeRequest("GET",'/classes/cso_payment_provider?where={"$or":[{"enabled_for_pay":true},{"enabled_for_payout":true}]}').then(result=>{
+        this.payment_providers=result.results;
+        resolve(result.results);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  getPayoutProvidersOnly(){
+    return new Promise((resolve,reject)=>{
+      this.makeRequest("GET",'/classes/cso_payment_provider?where={"enabled_for_payout":true}').then(result=>{
+        resolve(result.results);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  getPayoutAccountsOnly(){
+    return new Promise((resolve,reject)=>{
+      this.makeRequest("GET",'/classes/payment_account?&where={"enabled_for_payout":true}').then(result=>{
+        resolve(result.results);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  getPaymentAccounts(refresh=false){
+    return new Promise((resolve,reject)=>{
+      if ((this.payment_accounts)&&(!refresh)) {
+        resolve(this.payment_accounts);
+      } else this.makeRequest("GET",'/classes/payment_account').then(result=>{
+        this.payment_accounts=result.results;
+        resolve(result.results);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  linkPaymentAccount(return_url,payment_provider){ 
+    return new Promise((resolve,reject)=>{
+      return this.makeRequest("POST","/functions/linkpaymentaccount",{return_url:return_url,payment_provider:payment_provider}).then(result=>{
+        resolve(result.result);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  unlinkPaymentAccount(id){ 
+    return new Promise((resolve,reject)=>{
+      this.makeRequest("POST","/functions/unlinkpaymentaccount",{id:id}).then(result=>{
+        this.getPaymentAccounts(true);
         resolve(result);
       }).catch(err=>{
         reject(err);
@@ -196,8 +295,8 @@ const CreditApi ={
       });
     });
   },
-  newLoan(credit_product,amount,term,card_id){
-    return this.makeRequest("POST","/classes/loan",{credit_product:credit_product,amount:parseInt(amount),term:parseInt(term),card:card_id});
+  newLoan(credit_product,amount,term,payment_account_id){
+    return this.makeRequest("POST","/classes/loan",{credit_product:credit_product,amount:parseInt(amount),term:parseInt(term),payment_account:payment_account_id});
   },
   cancelLoan(id) {
     return this.makeRequest("GET","/loan/"+id+"/cancel");
