@@ -32,6 +32,10 @@ https://creditapi.ru
     
     CreditApi.saveUserdata(data) //сохранение личных данных пользователя
     
+    CreditApi.createRequestForUpdateUserdata(data) //Создать запрос на обновление личных данных пользователя
+  	
+  	CreditApi.getUnprocessedRequestsForUpdateUserdata() //получить список необработанных запросов на обновление личных данных
+    
     CreditApi.getCreditProducts() //получение списка кредитных продуктов
     
     CreditApi.getCreditProduct(id) //получение кредитного продукта по ID
@@ -85,6 +89,8 @@ https://creditapi.ru
     CreditApi.getDocument(name) //получить документ по наименованию
     
     CreditApi.signDocument(name,?code) //подписать документ 
+    
+    CreditApi.getSignedDocument(id) // получить подписанный документ по ID
     
     CreditApi.sendSMSforSigning(name) //Отправить СМС-код для электронного подписания документа (Для документов которые требуется подписать с помощью СМС)
 

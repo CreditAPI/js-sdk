@@ -87,6 +87,12 @@ const CreditApi ={
   saveUserdata(data){
     return this.makeRequest("PUT","/users/"+this.User.objectId,data);
   },
+  createRequestForUpdateUserdata(data){
+    return this.makeRequest("POST","/classes/change_data_request",{data:data});
+  },
+  getUnprocessedRequestsForUpdateUserdata(){
+    return this.makeRequest("GET",'/classes/change_data_request?where={"status":"new"}');
+  },
   requestPasswordReset(email) {
     return this.makeRequest("POST","/requestPasswordReset",{email:email});
   },
@@ -325,6 +331,9 @@ const CreditApi ={
     let data=null;
     if (code) data={'sms_code':code};
     return this.makeRequest("PUT","/document/"+name,data);
+  },
+  getSignedDocument(id){
+    return this.makeRequest("GET","/classes/signed_document/"+id);
   },
   sendSMSforSigning(name){
     return this.makeRequest("PUT","/document/"+name,{'send_new_sms_code':true});

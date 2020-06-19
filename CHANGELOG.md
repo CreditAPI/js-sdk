@@ -3,6 +3,10 @@ https://creditapi.ru
 # Credit API JS SDK v1.0.5
 ## JavaScript библиотека для работы с CreditAPI 
 
+### v1.0.7
+
+1. Added method createRequestForUpdateUserdata(data) to create a request to update users' personal data
+2. Added method getSignedDocument(id) to request signed document
 
 ### v1.0.6
 
