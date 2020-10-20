@@ -66,11 +66,13 @@ const CreditApi ={
      this.token=null;
      localStorage.removeItem('token');
   },
-  signup(email,phone,pwd){
+  signup(email,phone,pwd,meta=null){
     return new Promise((resolve,reject)=>{
       this.User=null;
       this.token=null;
-      this.makeRequest("POST","/users/signup",{email:email,phone:phone,password:pwd}).then(user=>{
+      let data={email:email,phone:phone,password:pwd};
+      if (meta) data.meta=meta;
+      this.makeRequest("POST","/users/signup",data).then(user=>{
         if (user.sessionToken) {
           this.token=user.sessionToken;
           localStorage.setItem('token', user.sessionToken);
@@ -301,6 +303,16 @@ const CreditApi ={
       });
     });
   },
+  checkVerificationStatus(){
+    return new Promise((resolve,reject)=>{
+      this.makeRequest("POST","/functions/verification_status").then(res=>{
+          this.User=res.result;
+          resolve(res.result);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
   newLoan(credit_product,amount,term,payment_account_id){
     return this.makeRequest("POST","/classes/loan",{credit_product:credit_product,amount:parseInt(amount),term:parseInt(term),payment_account:payment_account_id});
   },
@@ -327,9 +339,9 @@ const CreditApi ={
       });;
     });
   },
-  signDocument(name,code=null){
-    let data=null;
-    if (code) data={'sms_code':code};
+  signDocument(name,data=null){
+    if (typeof data !== 'object')
+      data={'sms_code':data};
     return this.makeRequest("PUT","/document/"+name,data);
   },
   getSignedDocument(id){
