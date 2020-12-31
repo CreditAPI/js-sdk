@@ -9,6 +9,7 @@ const CreditApi ={
   payment_accounts:null,
   last_message:null,
   last_message_unreaded:false,
+  website:null,
   init(url,orgId) {
     this.url=url;
     this.orgId=orgId;
@@ -130,7 +131,7 @@ const CreditApi ={
   },
   getOpenedLoans(){
     return new Promise((resolve,reject)=>{
-      this.makeRequest("GET",'/classes/loan?where={"closed":false}').then(result=>{
+      this.makeRequest("GET",'/classes/loan?where={"closed":false}&include=credit_product').then(result=>{
         resolve(result.results);
       }).catch(err=>{
         reject(err);
@@ -170,9 +171,9 @@ const CreditApi ={
   getTransaction(id){
     return this.makeRequest("GET","/classes/transaction/"+id);
   },
-  makePayment(loan_id,amount,prolong,payment_provider,payment_account,return_url,extra){
+  makePayment(loan_id,amount,prolong,payment_provider,payment_account,return_url,extra,aftersign=null){
     return new Promise((resolve,reject)=>{
-      this.makeRequest("POST","/functions/pay",{loan_id:loan_id,amount:amount,prolong:prolong,payment_provider:payment_provider,payment_account:payment_account,return_url:return_url,extra:extra}).then(result=>{
+      this.makeRequest("POST","/functions/pay",{loan_id:loan_id,amount:amount,prolong:prolong,payment_provider:payment_provider,payment_account:payment_account,return_url:return_url,extra:extra,aftersign:aftersign}).then(result=>{
         resolve(result.result);
       }).catch(err=>{
         reject(err);
@@ -328,12 +329,21 @@ const CreditApi ={
       });
     });
   },
-  getDocument(name){
+  getDocument(name,data={}){
     return new Promise((resolve,reject)=>{
-      this.makeRequest("GET","/document/"+name).then(content=>{
+      this.makeRequest("GET","/document/"+name,data).then(content=>{
         if (typeof content === 'object') {
           reject(content.message);
         } else resolve(content);
+      }).catch(err=>{
+        reject(err);
+      });;
+    });
+  },
+  getDocumentWitnInfo(name){
+    return new Promise((resolve,reject)=>{
+      this.makeRequest("GET","/document/"+name+'?with_info=true').then(content=>{
+        resolve(content);
       }).catch(err=>{
         reject(err);
       });;
@@ -351,7 +361,36 @@ const CreditApi ={
     return this.makeRequest("PUT","/document/"+name,{'send_new_sms_code':true});
   },
   getWebsiteStyle(id){
-    return this.makeRequest("GET","/classes/website/"+id);
+    return new Promise((resolve,reject)=>{
+      this.makeRequest("GET","/classes/website/"+id).then(website=>{
+        this.website=website;
+        resolve(website);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+  },
+  getProlongationAgreement(){
+    return this.makeRequest("POST","/functions/get_prolongation_agreement");
+  },
+  signProlongationAgreement(data){
+    if (typeof data !== 'object')
+      data={'sms_code':data};
+    return this.makeRequest("POST","/functions/sign_prolongation_agreement",data);
+  },
+  getProlongationRequest(id){
+    return this.makeRequest("GET","/classes/loan_prolongation_request/"+id+"?include=loan");
+  },
+  getClosingAgreement(){
+    return this.makeRequest("POST","/functions/get_closing_agreement");
+  },
+  signClosingAgreement(data){
+    if (typeof data !== 'object')
+      data={'sms_code':data};
+    return this.makeRequest("POST","/functions/sign_closing_agreement",data);
+  },
+  getClosingRequest(id){
+    return this.makeRequest("GET","/classes/loan_closing_request/"+id+"?include=loan");
   },
   getMessages(limit=0,offset=0,nomark=false){
     return new Promise((resolve,reject)=>{

@@ -3,6 +3,16 @@ https://creditapi.ru
 # Credit API JS SDK v1.0.5
 ## JavaScript библиотека для работы с CreditAPI 
 
+
+### v1.0.14
+1. Added methods for loan closing add-ons
+
+### v1.0.13
+1. Added methods for loan prolongation add-ons
+
+### v1.0.12
+Minor fixes
+
 ### v1.0.7
 
 1. Added method createRequestForUpdateUserdata(data) to create a request to update users' personal data
